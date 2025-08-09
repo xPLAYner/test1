@@ -2,7 +2,12 @@
 
 def add_book(books):
     # add book
-    book = input("Enter book title: ")
+    #book = input("Enter book title: ")
+    parts = cmd.split()
+    book = " ".join(parts[1:])
+    if not book:
+        print("Book title cannot be empty.")
+        return
     next_id = len(books) + 1
     books.update({next_id: {"ID": next_id, "Title": book, "Read": False}})
     print(f"Book '{book}' added with ID {next_id}.")
@@ -38,10 +43,10 @@ def quit_program():
     exit()
 
 def help_command():
-    print("Available commands: add, list, read <ID>, quit, help.")
+    print("Available commands: add <Title>, list, read <ID>, quit, help.")
 
 def default_command():
-    print("Unknown command. Available commands: add, list, read <ID>, quit.")
+    print("Unknown command. Available commands: add <Title>, list, read <ID>, quit.")
 
 # --- main program ---
 # Initialize the books dictionary and next_id
@@ -54,13 +59,13 @@ while True:
 
     # Process the command
     match cmd:
-        case "add":
+        case s if s.startswith("add"):
             # add book
             add_book(books)
         case "list":
             # list books
             list_books(books)
-        case s if cmd.startswith("read"):
+        case s if s.startswith("read"):
             mark_as_read(books, cmd)
         case "quit":
             quit_program()
