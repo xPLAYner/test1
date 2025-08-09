@@ -20,7 +20,7 @@ def list_books(books):
                 mark = "✗"
             print(f"{book_data['ID']:<4}{book_data['Title']:<30}{mark}")
 
-def mark_as_read(books, book_id):
+def mark_as_read(books, cmd):
     # mark book as read
     parts = cmd.split()
     if len(parts) != 2 or not parts[1].isdigit():
@@ -53,22 +53,18 @@ while True:
     cmd = input(">> ").strip()
 
     # Process the command
-    match cmd.split(maxsplit=1):
-        case ["add"]:
+    match cmd:
+        case "add":
             # add book
             add_book(books)
-        case ["list"]:
+        case "list":
             # list books
             list_books(books)
-        case ["read", book_id]:
-            # mark book as read
-            if book_id.isdigit():
-                mark_as_read(books, int(book_id))
-            else:
-                print("Invalid command. Use 'read <ID>'.")
-        case ["quit"]:
+        case s if cmd.startswith("read"):
+            mark_as_read(books, cmd)
+        case "quit":
             quit_program()
-        case ["help"]:
+        case "help":
             help_command()
         case _:
             default_command()
