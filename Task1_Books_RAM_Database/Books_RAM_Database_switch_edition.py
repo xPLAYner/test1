@@ -1,10 +1,9 @@
 # --- functions definitions ---
 
-def add_book(books):
+def add_book(books, operation_argument):
     # add book
     #book = input("Enter book title: ")
-    parts = cmd.split()
-    book = " ".join(parts[1:])
+    book = operation_argument
     if not book:
         print("Book title cannot be empty.")
         return
@@ -25,18 +24,18 @@ def list_books(books):
                 mark = "✗"
             print(f"{book_data['ID']:<4}{book_data['Title']:<30}{mark}")
 
-def mark_as_read(books, cmd):
+def mark_as_read(books, operation_argument):
     # mark book as read
-    parts = cmd.split()
-    if len(parts) != 2 or not parts[1].isdigit():
+    parts = operation_argument.split()
+    if len(parts) != 1 or not operation_argument.isdigit():
         print("Invalid command. Use 'read <ID>'.")
-    elif int(parts[1]) not in books:
-        print(f"Book with ID {parts[1]} does not exist.")
-    elif books[int(parts[1])]["Read"]:
-        print(f"Book {books[int(parts[1])]['Title']} is already marked as read.")
+    elif int(operation_argument) not in books:
+        print(f"Book with ID {operation_argument} does not exist.")
+    elif books[int(operation_argument)]["Read"]:
+        print(f"Book {books[int(operation_argument)]['Title']} is already marked as read.")
     else:
-        books[int(parts[1])]["Read"] = True
-        print(f"Marking book {books[int(parts[1])]['Title']} as read.")
+        books[int(operation_argument)]["Read"] = True
+        print(f"Marking book {books[int(operation_argument)]['Title']} as read.")
 
 def quit_program():
     print("Exiting the program.")
@@ -56,17 +55,26 @@ help_command()
 while True:
     # Get user command
     cmd = input(">> ").strip()
+    parts = cmd.split(maxsplit=1)
+
+    operation = parts[0]
+    operation_argument = parts[1] if len(parts) > 1 else None
+
+    # Check if the command is valid
+    if operation not in ["add", "list", "read", "quit", "help"]:
+        default_command()
+        continue
 
     # Process the command
-    match cmd:
-        case s if s.startswith("add"):
+    match operation:
+        case "add":
             # add book
-            add_book(books)
+            add_book(books, operation_argument)
         case "list":
             # list books
             list_books(books)
-        case s if s.startswith("read"):
-            mark_as_read(books, cmd)
+        case "read":
+            mark_as_read(books, operation_argument)
         case "quit":
             quit_program()
         case "help":
